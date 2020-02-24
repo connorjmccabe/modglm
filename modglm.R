@@ -1,6 +1,6 @@
 #inteff replication
 
-intglm<-function (model, vars, data)
+modglm<-function (model, vars, data)
 {
 #This defines a string for the interaction term
 (int.var <- paste(vars, collapse = ":"))
