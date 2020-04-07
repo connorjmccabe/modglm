@@ -1,4 +1,4 @@
-modglm<-function(model, vars, data, part=NULL, hyps="means", plotby=NULL,type="socpd")
+modglm<-function(model, vars, data, part=NULL, hyps="means", plotby=NULL,type="cpd")
 {
   ints<<-list()
 #This defines a string for the interaction term
@@ -98,7 +98,7 @@ for(i in 1:length(xmats)){
   # }
 
   # else 
-if(type=="socpd"){
+if(type=="cpd"){
     if (model$family$link == "logit")
   {
     hat<-1/(1+ exp(-xb))
@@ -131,7 +131,7 @@ if(type=="socpd"){
     
   }
 }
-    if(type=="fd"){
+    else if(type=="fd"){
       if(model$call[1]=="gee()"){dum <- vars[which(sapply(apply(dftemp[, vars], 2, table), length) ==2)]}
       else(dum <- vars[which(sapply(apply(model$model[, vars], 2, table), length) ==2)])
       cont <- vars[which(vars != dum)]
@@ -188,6 +188,82 @@ if(type=="socpd"){
       deriv3 <- d1f1 + (b[cont] + bint) * d2f1 * X[, cont]
       deriv0 <- (b[cont] + bint) * d2f1 - b[cont] * d2f2
     }
+  
+  else if(type=="dd"){
+    
+    X00 <- X01 <- X10 <- X11<-as.data.frame(X)
+    
+    X00[, vars[1]] <- 0
+    X00[, vars[2]] <- 0
+    X01[, vars[1]] <- 0
+    X01[, vars[2]] <- 1
+    X10[, vars[1]] <- 1
+    X10[, vars[2]] <- 0
+    X11[, vars[1]] <- 1
+    X11[, vars[2]] <- 1
+    
+    if (int.var %in% names(model$coefficients)==T){
+      
+      X00[, int.var] <- X00[, vars[1]] *X00[, vars[2]]
+      X01[, int.var] <- X01[, vars[1]] *X01[, vars[2]]
+      X10[, int.var] <- X10[, vars[1]] *X10[, vars[2]]
+      X11[, int.var] <- X11[, vars[1]] *X11[, vars[2]]
+
+      bint<-b[int.var]
+    }
+    else{
+      bint<-0
+    }
+    X00<-as.matrix(X00)
+    X01<-as.matrix(X01)
+    X10<-as.matrix(X10)
+    X11<-as.matrix(X11)
+    
+    x00b<-X00 %*% b
+    x01b<-X01 %*% b
+    x10b<-X10 %*% b
+    x11b<-X11 %*% b
+    
+    if(model$family$link == "logit"){
+      hat <- 1/(1+ exp(-xb))
+      
+      hat00 <- 1/(1+ exp(-x00b))
+      d1f00 <- exp(-x00b)*(1+exp(-x00b))^(-2)
+      
+      hat01 <- 1/(1+ exp(-x01b))
+      d1f01 <- exp(-x01b)*(1+exp(-x01b))^(-2)
+      
+      hat10 <- 1/(1+ exp(-x10b))
+      d1f10 <- exp(-x10b)*(1+exp(-x10b))^(-2)
+      
+      hat11 <- 1/(1+ exp(-x11b))
+      d1f11 <- exp(-x11b)*(1+exp(-x11b))^(-2)
+      
+    }
+    
+    else if (model$family$link == "log"){
+      hat<-exp(X %*% b)
+      
+      hat00 <- exp(x00b)
+      d1f00 <- exp(x00b)
+      
+      hat01 <- exp(x01b)
+      d1f01 <- exp(x01b)
+      
+      hat10 <- exp(x10b)
+      d1f10 <- exp(x10b)
+      
+      hat11 <- exp(x11b)
+      d1f11 <- exp(x11b)
+    }
+    
+    int.est <- (hat11-hat10)-(hat01-hat00)
+    
+    deriv1 <- d1f11-d1f10
+    deriv2 <- d1f11-d1f01
+    deriv3 <- d1f11
+    deriv0 <- (d1f11-d1f01)-(d1f10-d1f00)
+  }
 
   # if (is.list(model$coefficients)){
   #   if(part=="count"){
@@ -200,7 +276,7 @@ if(type=="socpd"){
   
   # else
 
-if(type=="socpd"){
+if(type=="cpd"){
   
   
   if (int.var %in% names(model$coefficients)==F){bint<-0}
@@ -250,15 +326,17 @@ if(type=="socpd"){
 # 
   # if(dd)(jcovar <- apply(covars, 2, function(x) (2 + 1) *d2f1 - 2 * d2f2 * x))
 
-  if(type=="fd"){jcovar <- apply(covars, 2, function(x) ((b[cont] + bint) *d2f1 - b[cont] * d2f2) * x)}
-  else(jcovar <- apply(covars, 2, function(x) bint * deriv2 * x +b1b4x2 * b2b4x1 * x * deriv3))
+  if(type=="cpd"){jcovar <- apply(covars, 2, function(x) bint * deriv2 * x +b1b4x2 * b2b4x1 * x * deriv3)}
+  else if(type=="fd"){jcovar <- apply(covars, 2, function(x) ((b[cont] + bint) *d2f1 - b[cont] * d2f2) * x)}
+  else if(type=="dd"){jcovar <- apply(covars, 2, function(x) ((d1f11 - d1f01) - (d1f10 - d1f00)) * x)}
+  
   jcovar <- array(jcovar, dim=dim(covars))
   dimnames(jcovar) <- dimnames(covars)
 
-  if(type=="fd"){jac<-cbind(deriv1, deriv2, deriv3, jcovar, deriv0)[,,drop=F]}
-  else(jac <- cbind(deriv11, deriv22, deriv44, jcovar, derivcc)[,,drop=F])
+  if(type=="cpd")(jac <- cbind(deriv11, deriv22, deriv44, jcovar, derivcc)[,,drop=F])
+  else if(type=="fd"| type=="dd"){jac<-cbind(deriv1, deriv2, deriv3, jcovar, deriv0)[,,drop=F]}
   colnames(jac) <- c(vars, int.var, colnames(jcovar), "(Intercept)")
-
+  
   jac <- jac[, match(colnames(X), colnames(jac)), drop=F]
 
   # if(is.list(model$coefficients)){
