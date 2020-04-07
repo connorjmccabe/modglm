@@ -53,7 +53,7 @@ We may then use this data to estimate the model as follows:
 ```
 pois<-glm(y ~ x1 + x2 + female + x1:female, data=df,family="poisson")
 ```
-Finally, we may source the `modglm` using the following code:
+Finally, we may source `modglm` using the following code:
 
 ```
 require(RCurl)
