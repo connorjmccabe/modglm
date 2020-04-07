@@ -16,7 +16,7 @@ However, we note key differences between our code and those provided by the abov
   
 ## Using `modglm`: Example
 
-###Setup
+### Setup
 
 The following instructions are based upon the simulated Poisson example presented in Equation 17 of our manuscript. Code for generating this data are as follows:
 
