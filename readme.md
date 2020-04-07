@@ -6,13 +6,50 @@ LINK
 
 This code is largely adapted from the `DAMisc` package for logit and probit models (Armstrong & Armstrong, 2020), which itself was an adaptation of the inteff command in Stata (Norton, Wang, & Ai, 2004). Citations for each of these excellent resouces are as follows:
 
-Armstrong, D., & Armstrong, M. D. (2020). Package ‘DAMisc’. URL: ftp://cygwin.uib.no/pub/cran/web/packages/DAMisc/DAMisc.pdf
+Armstrong, D., & Armstrong, M. D. (2020). Package `DAMisc`. 
+URL: ftp://cygwin.uib.no/pub/cran/web/packages/DAMisc/DAMisc.pdf
 
-Norton, E. C., Wang, H., & Ai, C. (2004). Computing interaction effects and standard errors in logit and probit models. The Stata Journal, 4(2), 154-167. URL: https://journals.sagepub.com/doi/abs/10.1177/1536867X0400400206
+Norton, E. C., Wang, H., & Ai, C. (2004). Computing interaction effects and standard errors in logit and probit models. The Stata Journal, 4(2), 154-167.
+URL: https://journals.sagepub.com/doi/abs/10.1177/1536867X0400400206
 
-However, we note key differences between our code and those provided by the above resources. First, modglm provides functionality for computing interaction effects in Poisson and negative binomial models in addition to logit models, and can accomodate models involving generalized estimating equations (GEE). Second, interaction effects can be estimated without the inclusion of a product term in these models to accomodate Implication 2 of our manuscript (i.e. that product terms are not required to estimate interaction in GLMS). Third, we provide additional functionality that accomodates Implication 1 of our manuscript that allows users to more flexibly estimate interaction effects conditioned on user-specified hypothetical scenarios; creates a plot that summarizes point estimates of the interaction effect in the observed data; and provides output that may be relevant in summarizing the results (e.g., the proportion of significant effects in the sample).
+However, we note key differences between our code and those provided by the above resources. First, modglm provides functionality for computing interaction effects in Poisson and negative binomial models in addition to logit models, and can accomodate models involving generalized estimating equations (GEE). Second, we provide additional functionality that accomodates Implication 1 of our manuscript that allows users to more flexibly estimate interaction effects conditioned on user-specified hypothetical scenarios; creates a plot that summarizes point estimates of the interaction effect in the observed data; and provides output that may be relevant in summarizing the results (e.g., the proportion of significant effects in the sample). Third, interaction effects can be estimated without the inclusion of a product term in these models to accomodate Implication 2 of our manuscript (i.e. that product terms are not required to estimate interaction in GLMs).
   
-## Using modglm
+## Using modglm: Example
+
+The following instructions are based upon the simulated Poisson example presented in Equation 17 of our manuscript. Code for generating this data are as follows:
+
+```
+set.seed(1678)
+
+b0 <- -3.8 ##Intercept
+b1 <- .35 ###X1 Effect
+b2 <- .9 #X2 Effect
+b3 <- 1.1 #Sex covariate effect
+b13<- .2 #product term coefficient
+n<-1000 #Sample Size
+mu<-rep(0,2) #Specify means
+S<-matrix(c(1,.5,.5,1),nrow=2,ncol=2) #Specify covariance matrix
+sigma <- 1 #Level 1 error
+
+require(MASS)
+rawvars<-mvrnorm(n=n, mu=mu, Sigma=S) #simulates our continuous predictors from a multivariate normal distribution
+cat<-rbinom(n=n,1,.5)
+id<-seq(1:n)
+eij <- rep(rnorm(id, 0, sigma))
+xb<-  (b0) + (b1) * (rawvars[,1]) + (b2) * (rawvars[,2]) + (b3)*cat + b13*cat*(rawvars[,1]) + eij
+# (b3) * (rawvars[,1]*rawvars[,2]) + 
+
+#Generate Poisson data
+ct <- exp(xb)
+y <- rpois(n,ct)
+
+df <- data.frame(y=y,x1=rawvars[,1],x2=rawvars[,2],female=cat)
+```
+
+We may use this data to then estimate the model as follows:
+
+```
+```
 
 ### Step 1:
 
