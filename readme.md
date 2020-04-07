@@ -1,10 +1,10 @@
 # Modglm: Evaluating interaction effects in logit and count GLMs
 
-The following are instructions for using the functions provided by the modglm package. We strongly encourage that users first read our accompanying manuscript before using this code. This manuscript is currently under review, though is available presently as a preprinted version on PsyArxiv:
+The following are instructions for using the functions provided by our `modglm` code. We strongly encourage that users first read our accompanying manuscript before using this code. This manuscript is currently under review, though is available presently as a preprinted version on PsyArxiv:
 
 LINK
 
-This code is largely adapted from the `DAMisc` package for logit and probit models (Armstrong & Armstrong, 2020), which itself was an adaptation of the inteff command in Stata (Norton, Wang, & Ai, 2004). Citations for each of these excellent resouces are as follows:
+This code is largely adapted from the `intEff` function `DAMisc` package for logit and probit models (Armstrong & Armstrong, 2020), which itself was an adaptation of the `inteff` command in Stata (Norton, Wang, & Ai, 2004). Citations for each of these excellent resouces are as follows:
 
 Armstrong, D., & Armstrong, M. D. (2020). Package `DAMisc`. 
 URL: ftp://cygwin.uib.no/pub/cran/web/packages/DAMisc/DAMisc.pdf
@@ -16,6 +16,7 @@ However, we note key differences between our code and those provided by the abov
   
 ## Using modglm: Example
 
+#Setup
 The following instructions are based upon the simulated Poisson example presented in Equation 17 of our manuscript. Code for generating this data are as follows:
 
 ```
@@ -46,55 +47,56 @@ y <- rpois(n,ct)
 df <- data.frame(y=y,x1=rawvars[,1],x2=rawvars[,2],female=cat)
 ```
 
-We may use this data to then estimate the model as follows:
+We may then use this data to estimate the model as follows:
 
 ```
+pois<-glm(y ~ x1 + x2 + female + x1:female, data=df,family="poisson")
+```
+Finally, we may source the `modglm` using the following code:
+
+```
+require(RCurl)
+
+require(RCurl)
+eval(parse(text = getURL("https://raw.githubusercontent.com/connorjmccabe/modglm/master/modglm.R", ssl.verifypeer = FALSE)))
+
 ```
 
-### Step 1:
+### The `modglm` Function
 
-![alt text](https://github.com/connorjmccabe/InterActive/blob/master/image%20files/Picture1.png)
+Assume that we aim to use `modglm` to estimate the interaction between x1 and female in the above model. We estimate interaction effects using `modglm` as follows:
 
-### Step 2:
-
-The model being estimated is *Y = X + Z + XZ*.
-
-![alt text](https://github.com/connorjmccabe/InterActive/blob/master/image%20files/Picture2.png)
-
-Note that X and Z are centered and Y is untransformed (raw) by default, though multiple scaling options are available. No covariates or quadratic effects will be specified in the current example.
-
-### Step 3: Click the “Run Analysis” button (depicted above) to produce a summary table of coefficients and interaction graphics.
-
-This will generate a summary table of coefficients, conduct regions of significance analyses, and will create the interaction graphics.
-
-### Step 4: Adjust the values of each small multiple as desired.
-
-![alt text](https://github.com/connorjmccabe/InterActive/blob/master/image%20files/Picture3.png)
-
-Each multiple corresponds with a particular level of the moderator. By default, these range from -2 to 2 standard deviations because this will generally be representative of the moderator range given the moderator is approximately normal. However, we encourage you to modify these values to explore this functionality. Once small multiple values are decided upon, proceed to step 5 to customize the plot.
-
-### Step 5: Click on the “Customize Plot” tab to change axes and plot titles, select the “greyscale” option, and download the finalized plot.
-
-![alt text](https://github.com/connorjmccabe/InterActive/blob/master/image%20files/Picture4.png)
-
-Users may use these customization options to ready this plot for use in a manuscript. Clicking the “Download Plot” button will output a .png file.
-
-## Additional Functions in interActive
-
-### Examine the marginal effects plot.
-
-Click on the “Marginal Effects Plot” tab to view a depiction of the regions of significance analyses. Note that this plot displays standardized versions of X and Z predictor variables. Customization options for this plot are provided on this tab as well, and users can download this plot using the “Download Marginal Effects Plot” button below the graphic.
-
-### View the plot estimates and raw data.
-
-Users may view the uploaded data by clicking on the “Raw Data” tab to help identify problems in their data (e.g., missing values, outliers, etc.). Users can also view the plot estimates directly by clicking on the “Plot Estimates” tab to view the estimates used to create the small multiples graphic. 
-
-### Download the R objects used to generate plots and upload them directly to R/Rstudio.
-
-Users can download an .rds file using the “Download Plot Data” button located on the upper-righthand side of the screen under the "Plot" tab. Advanced users can read this file into R or Rstudio to customize their plots or examine their models in greater detail. Example code for reading an .rds file into R or Rstudio is provided below:
-  
-  ```
-readRDS("~/Downloads/plotdata.rds")
+```
+pois.ints<-modglm(model=pois, vars=c("x1","female"), data=df, type="fd", hyps="means")
 ```
 
-### Explore the interaction with skewed predictor variables.
+Above, `modglm` requires at minimum four inputs, with one additional optional input.
+
+The first is the estimated model object (e.g., `model=pois`). Currently, `model` may take logit or Poisson model objects estimated using the `stats` package, negative binomial model objects estimating using the `MASS` package, and GEE Poisson or logit models estimated using the `gee` package. The key difference when GEE models are estimated is that robust variance-covariance matrices that correct for clustering are used instead of the standard estimated variance-covariance matrix when computing standard errors of interaction effects. We hope to include additional GLMs in `modglm` in the near future, including zero-inflated and hurdle models.  
+
+The second is a 2-element vector of the variables included in the interaction term (e.g., `vars=c("x1","female")`). As noted above, `modglm` makes no requirement that a product term need be specified in the model.
+
+The third is the data frame used in estimating the model (e.g., `data=df`).
+
+The fourth is the type of interaction being specified (e.g., `type="fd"`). This corresponds directly with the definition of interaction being used based on the variable type of the predictors. Three options are available, which mirrior our definition of interaction in Equation 10 in our manuscript. For continuous variable interactions, specify `type="cpd"` for computing the second-order cross-partial derivative. For continuous-by-discrete variable interactions, specify `type="fd"` for computing the finite difference in the partial derivative. For discrete variable interactions, specify `type="dd"` for computing the double finite difference.
+
+Finally, `modglm` will optionally produce an interaction point estimate at a specified hypothetical condition using the `hyp` input. By default, this is specified at the mean values of all included covariates. However, this can be modified by providing a vector of hypothetical values for the predictors involved in the model. For example, using `hyps=c(c(1,-.5,.25,0)` will provide estimates for when x1 is -0.5, x2 is 0.25, and female is 0. Note that a 1 must be provided at the beginning of this vector to carry forward the intercept value. 
+
+### `moglm` Output
+
+`modglm` produces a list of objects summarizing the results. Noting that we have defined our output as `pois.ints`, use (for example) `names(pois.ints)` to view the elements of this list, which provides the following:
+
+```
+> names(pois.ints)
+[1] "obints"        "inthyp"        "prop.sig"      "model.summary" "intsplot" 
+```
+
+`obints` provides a data frame of values computed observation-wise in the data. In order of columns, these include the interaction point estimates in the data (`int.est`), the predicted value of the outcome (`hat`), the delta method standard error of interaction point estimate (`se.int.est`), the t-value (`t.val`), and the significance designation based on the t-value (`sig`).
+
+`inthyp` provides the results of the hypothetical condition specified by `hyps` as described above. This has the identical format as `obints` but contains only a single row of values.
+
+`prop.sig` provides the proportion of significant values among the observed data. This value may be helpful to users in summarizing the results in-text.
+
+`model.summary` is strictly a reproduction of a results summary table provided by the model (i.e. `summary(pois)`).
+
+Finally, `intsplot` provides a graphical depiction of the interaction point estimates computed observation-wise, plotted against the model-predicted outcome (see also Ai & Norton, 2003). This plot is created using `ggplot2`. This provides a snapshot summary of the interaction effects present in the data, including the significance values and the potential range in the observed interaction effects.
