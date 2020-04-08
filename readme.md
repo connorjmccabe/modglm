@@ -4,7 +4,7 @@ The following are instructions for using the functions provided by our `modglm` 
 
 https://psyarxiv.com/th94c
 
-This code is largely adapted from the `intEff` function `DAMisc` package for logit and probit models (Armstrong & Armstrong, 2020), which itself was an adaptation of the `inteff` command in Stata (Norton, Wang, & Ai, 2004). Citations for each of these excellent resouces are as follows:
+This code is largely adapted from the `intEff` function in the `DAMisc` package for logit and probit models (Armstrong & Armstrong, 2020), which itself was an adaptation of the `inteff` command in Stata (Norton, Wang, & Ai, 2004). Citations for each of these excellent resouces are as follows:
 
 Armstrong, D., & Armstrong, M. D. (2020). Package `DAMisc`. 
 URL: ftp://cygwin.uib.no/pub/cran/web/packages/DAMisc/DAMisc.pdf 
