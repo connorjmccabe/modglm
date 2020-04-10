@@ -21,6 +21,7 @@ modglm<-function(model, vars, data, part=NULL, hyps="means", plotby=NULL,type="c
     # }
   # b <- model$coef
 #Define design matrix
+
   # if(model$call[1]=="gee()"){
   #   dftemp<-na.omit(data[,which(names(data) %in% names(model$coefficients))])
   #   X<-as.data.frame(cbind(rep(1,nrow(dftemp)),dftemp))
@@ -28,7 +29,16 @@ modglm<-function(model, vars, data, part=NULL, hyps="means", plotby=NULL,type="c
   
   # else(
     X<-as.data.frame(cbind(rep(1,nrow(model$model)),model$model[,-1]))
-    # )
+  #In-progress: ensuring mdoglm works with gee()
+ # if(model$call[1]=="gee()"){
+ #  dftemp<-na.omit(data[,which(names(data) %in% names(model$coefficients))])
+ # X<-as.data.frame(cbind(rep(1,nrow(dftemp)),dftemp))
+ #}
+  
+  #else(
+    X<-as.data.frame(cbind(rep(1,nrow(model$model)),model$model[,-1]))
+  #)
+>>>>>>> origin/master
   
   if(hyps[1]=="means"){cfs <- matrix(colMeans(X),nrow=1)}
   else(cfs<-hyps)
@@ -355,9 +365,17 @@ if(type=="cpd"){
 
 
   # else{
+<<<<<<< HEAD
   if(model$call[1]=="gee()"){se <- sqrt(diag(jac %*% model$robust.variance %*% t(jac)))}
 
   else{se <- sqrt(diag(jac %*% vcov(model) %*% t(jac)))}
+=======
+  #if(model$call[1]=="gee()"){se <- sqrt(diag(jac %*% model$robust.variance %*% t(jac)))}
+  
+  #else{
+    se <- sqrt(diag(jac %*% vcov(model) %*% t(jac)))
+                                      #}
+>>>>>>> origin/master
     # }
 
   t.val <- int.est/se

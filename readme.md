@@ -2,9 +2,9 @@
 
 The following are instructions for using the functions provided by our `modglm` code. We strongly encourage that users first read our accompanying manuscript before using this code. This manuscript is currently under review, though is available presently as a preprinted version on PsyArxiv:
 
-(Omitted for review purposes)
+https://psyarxiv.com/th94c
 
-This code is largely adapted from the `intEff` function `DAMisc` package for logit and probit models (Armstrong & Armstrong, 2020), which itself was an adaptation of the `inteff` command in Stata (Norton, Wang, & Ai, 2004). Citations for each of these excellent resouces are as follows:
+This code is largely adapted from the `intEff` function in the `DAMisc` package for logit and probit models (Armstrong & Armstrong, 2020), which itself was an adaptation of the `inteff` command in Stata (Norton, Wang, & Ai, 2004). Citations for each of these excellent resouces are as follows:
 
 Armstrong, D., & Armstrong, M. D. (2020). Package `DAMisc`. 
 URL: ftp://cygwin.uib.no/pub/cran/web/packages/DAMisc/DAMisc.pdf 
@@ -53,11 +53,11 @@ We may then use this data to estimate the model as follows:
 ```
 pois<-glm(y ~ x1 + x2 + female + x1:female, data=df,family="poisson")
 ```
-Finally, we may source the `modglm` using the following code:
+Finally, we may source `modglm` using the following code:
 
 ```
 require(RCurl)
-eval(parse(text = getURL("https://raw.githubusercontent.com/Modglmtemp/Modglm/master/modglm.R", 
+eval(parse(text = getURL("https://raw.githubusercontent.com/connorjmccabe/modglm/master/modglm.R", 
                           ssl.verifypeer = FALSE)))
 ```
 
