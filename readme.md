@@ -57,7 +57,7 @@ Finally, we may source `modglm` using the following code:
 
 ```
 require(RCurl)
-eval(parse(text = getURL("https://raw.githubusercontent.com/Modglmtemp/Modglm/master/modglm.R", 
+eval(parse(text = getURL("https://raw.githubusercontent.com/connorjmccabe/modglm/master/modglm.R", 
                           ssl.verifypeer = FALSE)))
 ```
 
