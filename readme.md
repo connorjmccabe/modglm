@@ -12,11 +12,11 @@ URL: ftp://cygwin.uib.no/pub/cran/web/packages/DAMisc/DAMisc.pdf
 Norton, E. C., Wang, H., & Ai, C. (2004). Computing interaction effects and standard errors in logit and probit models. The Stata Journal, 4(2), 154-167.
 URL: https://journals.sagepub.com/doi/abs/10.1177/1536867X0400400206
 
-However, we note key differences between our code and those provided by the above resources. First, `modglm` provides functionality for computing interaction effects in Poisson and negative binomial models in addition to logit models, and can accomodate models involving generalized estimating equations (GEE). Second, we provide additional functionality that accomodates Implication 1 of our manuscript. This includes 1.) allowing users to more flexibly estimate interaction effects conditioned on user-specified hypothetical scenarios; 2.) creating a plot that summarizes point estimates of the interaction effect in the observed data; and 3.) providing additional output that may be relevant in summarizing the results (e.g., the proportion of significant effects in the sample). Third, interaction effects can be estimated without the inclusion of a product term in these models to accomodate Implication 2 of our manuscript (i.e. that product terms are not required to estimate interaction in GLMs).
+However, we note key differences between our code and those provided by the above resources. First, `modglm` provides functionality for computing interaction effects in Poisson and negative binomial models in addition to logit models. Second, we provide additional functionality that accomodates Implication 1 of our manuscript. This includes 1.) allowing users to more flexibly estimate interaction effects conditioned on user-specified hypothetical scenarios; 2.) creating a plot that summarizes point estimates of the interaction effect in the observed data; and 3.) providing additional output that may be relevant in summarizing the results (e.g., the proportion of significant effects in the sample). Third, interaction effects can be estimated without the inclusion of a product term in these models to accomodate Implication 2 of our manuscript (i.e. that product terms are not required to estimate interaction in GLMs).
   
 ## Using `modglm`: Example
 
-###Setup
+### Setup
 
 The following instructions are based upon the simulated Poisson example presented in Equation 17 of our manuscript. Code for generating this data are as follows:
 
@@ -71,7 +71,7 @@ pois.ints<-modglm(model=pois, vars=c("x1","female"), data=df, type="fd", hyps="m
 
 Above, `modglm` requires at minimum four inputs, with one additional optional input.
 
-The first is the estimated model object (e.g., `model=pois`). Currently, `model` may take logit or Poisson model objects estimated using the `stats` package, negative binomial model objects estimating using the `MASS` package, and GEE Poisson or logit models estimated using the `gee` package. The key difference when GEE models are estimated is that robust variance-covariance matrices that correct for clustering are used (instead of the standard estimated variance-covariance matrix) when computing standard errors of interaction effects. We hope to include additional GLMs in `modglm` in the near future, including zero-inflated and hurdle models.  
+The first is the estimated model object (e.g., `model=pois`). Currently, `model` may take logit or Poisson model objects estimated using the `stats` package and negative binomial model objects estimating using the `MASS` package. We hope to include additional GLMs in `modglm` in the near future, including zero-inflated and hurdle models and generalized estimating equation (GEE) GLMs.
 
 The second is a 2-element vector of the variables included in the interaction term (e.g., `vars=c("x1","female")`). As noted above, `modglm` makes no requirement that a product term need be specified in the model.
 
