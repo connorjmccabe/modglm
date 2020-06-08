@@ -367,7 +367,7 @@ if(type=="cpd"){
   if(model$call[1]=="gee()"){se <- sqrt(diag(jac %*% model$robust.variance %*% t(jac)))}
 
   else{se <- sqrt(diag(jac %*% vcov(model) %*% t(jac)))}
-=======
+
   #if(model$call[1]=="gee()"){se <- sqrt(diag(jac %*% model$robust.variance %*% t(jac)))}
   
   #else{
