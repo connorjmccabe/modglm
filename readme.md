@@ -1,6 +1,6 @@
 # Modglm: Evaluating interaction effects in logit and count GLMs
 
-The following are instructions for using the functions provided by our `modglm` code. We strongly encourage that users first read our accompanying manuscript before using this code. This manuscript is currently under review, though is available presently as a preprinted version on PsyArxiv:
+The following are instructions for using the functions provided by our `modglm` code. We strongly encourage that users first read our accompanying manuscript before using this code. This manuscript is currently conditionally accepted, though is available presently as a preprinted version on PsyArxiv:
 
 https://psyarxiv.com/th94c
 
