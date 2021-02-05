@@ -34,7 +34,7 @@ df.test<-rbind(c(1,mean(df$x1),quantile(df$x2,.25),1),
                df)
 # logit<-glm(y ~ x1 + x2 + female + x1:female, data=df,family="binomial")
 pois<-glm(y ~ x1 + x2 + female + x1:female, data=df,family="poisson")
-source("~/Documents/modglm/modglm.R")
+#source("~/Documents/modglm/modglm.R")
 
 # 0.65*exp(0.65*mean(pois$model$x1)+1.57)-0.33*exp(0.33*mean(pois$model$x1)+0.63)
 x1seq<-seq(-3,3,.1)
