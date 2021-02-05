@@ -1,4 +1,3 @@
-setwd("~/Dropbox/Postdoc/GLM Int Bias/")
 set.seed(1678)
 
 b0 <- -3.8 ##Intercept
