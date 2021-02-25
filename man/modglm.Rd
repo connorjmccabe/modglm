@@ -25,3 +25,53 @@ modglm(model, vars, data, hyps = "means", plotby = NULL, type = "cpd")
 \description{
 Computing Interactions in nonlinear probability and count models
 }
+\examples{
+#Simulate a dataset
+set.seed(1678)
+
+b0 <- -3.8 ##Intercept
+b1 <- .35 ###Sensation Seeking Effect
+b2 <- .9 #Premeditation  Effect
+b3 <- 1.1 #Sex covariate effect
+b13<- .2 #product term coefficient
+n<-1000 #Sample Size
+mu<-rep(0,2) #Specify means
+S<-matrix(c(1,.5,.5,1),nrow=2,ncol=2) #Specify covariance matrix
+sigma <- 1 #Level 1 error
+
+rawvars<-mvrnorm(n=n, mu=mu, Sigma=S) #simulates our continuous predictors from a multivariate normal distribution
+cat<-rbinom(n=n,1,.5)
+id<-seq(1:n)
+eij <- rep(rnorm(id, 0, sigma))
+xb<-  (b0) + (b1) * (rawvars[,1]) + (b2) * (rawvars[,2]) + (b3)*cat + b13*cat*(rawvars[,1]) + eij
+
+ct <- exp(xb)
+y <- rpois(n,ct)
+
+df <- data.frame(y=y,senseek=rawvars[,1],premed=rawvars[,2],male=cat)
+
+
+pois<-glm(y ~ senseek + premed + male + senseek:male, data=df,family="poisson")
+
+#Evaluated the interaction function (i.e., computes finite difference values) for sensation seeking and sex
+pois.ints<-modglm(model=pois, vars=c("senseek","male"), data=df, type="fd", hyps="means")
+
+names(pois.ints)
+
+'obints' provides the interaction effect conditioned on each observation in the data. E.g:
+head(pois.ints$obints)
+
+'inthyp' provides the results of the hypothetical condition specified by 'hyps' above. In this case, this is represented at the mean of all predictors:
+pois.ints$inthyp
+
+'aie' refers to the average interaction effect. This is computed as the mean of all interaction effects in the observed data:
+pois.ints$aie
+
+'desc' provides several other helpful descriptors of the interaction effect that researchers may wish to report:
+pois.ints$desc
+
+'intsplot' provides a graphical depiction of the interaction point estimates computed observation-wise, plotted against the model-predicted outcome (see also Ai & Norton, 2003)
+
+pois.ints$intsplot
+
+}
