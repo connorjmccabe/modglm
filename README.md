@@ -2,7 +2,7 @@
 
 The following are instructions for using the functions provided by our `modglm` code. We strongly encourage that users first read our accompanying manuscript before using this code. This manuscript is published online in Multivariate Behavioral Research:
 
-McCabe, C. J., Halvorson, M. A., King, K. M., Cao, X., & Kim, D. S. (2020). Interpreting interaction effects in generalized linear models of nonlinear probabilities and counts. Multivariate Behavioral Research, 1-27. doi: 10.1080/00273171.2020.1868966
+McCabe, C. J., Halvorson, M. A., King, K. M., Cao, X., & Kim, D. S. (2020). Interpreting interaction effects in generalized linear models of nonlinear probabilities and counts. Multivariate Behavioral Research, 1-27. doi: https://doi.org/10.1080/00273171.2020.1868966
 
 This code is largely adapted from the `intEff` function in the `DAMisc` package for logit and probit models (Armstrong & Armstrong, 2020), which itself was an adaptation of the `inteff` command in Stata (Norton, Wang, & Ai, 2004). Citations for each of these excellent resouces are as follows:
 
@@ -18,7 +18,7 @@ However, we note key differences between our code and those provided by the abov
 
 ### Setup
 
-The `modglm` package can be downloaded using the following:
+The `modglm` package can be installed using the following:
 ```
 devtools::install_github("connorjmccabe/modglm")
 ```
@@ -58,11 +58,13 @@ We may then use this data to estimate the model as follows:
 ```
 pois<-glm(y ~ x1 + x2 + female + x1:female, data=df,family="poisson")
 ```
+
 Finally, we can load in `modglm` using the following code:
 
 ```
 require(modglm)
 ```
+
 
 ### The `modglm` Function
 
