@@ -1,8 +1,8 @@
 # Modglm: Evaluating interaction effects in logit and count GLMs
 
-The following are instructions for using the functions provided by our `modglm` code. We strongly encourage that users first read our accompanying manuscript before using this code. This manuscript is currently under review, though is available presently as a preprinted version on PsyArxiv:
+The following are instructions for using the functions provided by our `modglm` code. We strongly encourage that users first read our accompanying manuscript before using this code. This manuscript is published online in Multivariate Behavioral Research:
 
-https://psyarxiv.com/th94c
+McCabe, C. J., Halvorson, M. A., King, K. M., Cao, X., & Kim, D. S. (2020). Interpreting interaction effects in generalized linear models of nonlinear probabilities and counts. Multivariate Behavioral Research, 1-27. doi: 10.1080/00273171.2020.1868966
 
 This code is largely adapted from the `intEff` function in the `DAMisc` package for logit and probit models (Armstrong & Armstrong, 2020), which itself was an adaptation of the `inteff` command in Stata (Norton, Wang, & Ai, 2004). Citations for each of these excellent resouces are as follows:
 
