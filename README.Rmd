@@ -18,6 +18,11 @@ However, we note key differences between our code and those provided by the abov
 
 ### Setup
 
+The `modglm` package can be downloaded using the following:
+```
+devtools::install_github("connorjmccabe/modglm")
+```
+
 The following instructions are based upon the simulated Poisson example presented in Equation 17 of our manuscript. Code for generating this data are as follows:
 
 ```
@@ -53,12 +58,10 @@ We may then use this data to estimate the model as follows:
 ```
 pois<-glm(y ~ x1 + x2 + female + x1:female, data=df,family="poisson")
 ```
-Finally, we may source `modglm` using the following code:
+Finally, we may laod in `modglm` using the following code:
 
 ```
-require(RCurl)
-eval(parse(text = getURL("https://raw.githubusercontent.com/connorjmccabe/modglm/master/modglm.R", 
-                          ssl.verifypeer = FALSE)))
+require(modglm)
 ```
 
 ### The `modglm` Function
