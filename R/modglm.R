@@ -13,7 +13,7 @@
 #' @examples
 #' #Simulate a dataset
 #' set.seed(1678)
-
+#'
 #' b0 <- -3.8 ##Intercept
 #' b1 <- .35 ###Sensation Seeking Effect
 #' b2 <- .9 #Premeditation  Effect
@@ -23,21 +23,21 @@
 #' mu<-rep(0,2) #Specify means
 #' S<-matrix(c(1,.5,.5,1),nrow=2,ncol=2) #Specify covariance matrix
 #' sigma <- 1 #Level 1 error
-
+#'
 #' rawvars<-mvrnorm(n=n, mu=mu, Sigma=S) #simulates our continuous predictors from a multivariate normal distribution
 #' cat<-rbinom(n=n,1,.5)
 #' id<-seq(1:n)
 #' eij <- rep(rnorm(id, 0, sigma))
 #' xb<-  (b0) + (b1) * (rawvars[,1]) + (b2) * (rawvars[,2]) + (b3)*cat + b13*cat*(rawvars[,1]) + eij
 # (b3) * (rawvars[,1]*rawvars[,2]) +
-
+#'
 #Generate Poisson data
 #' ct <- exp(xb)
 #' y <- rpois(n,ct)
-
+#'
 #' df <- data.frame(y=y,senseek=rawvars[,1],premed=rawvars[,2],male=cat)
 #'
-#'Estimate a Poisson model regressing y on sensation seeking, premeditation, sex, and the interaction between sensation seeking and sex:
+#Estimate a Poisson model regressing y on sensation seeking, premeditation, sex, and the interaction between sensation seeking and sex:
 #'
 #' pois<-glm(y ~ senseek + premed + male + senseek:male, data=df,family="poisson")
 #'
@@ -58,7 +58,7 @@
 #' 'desc' provides several other helpful descriptors of the interaction effect that researchers may wish to report:
 #' pois.ints$desc
 #'
-#' 'intsplot' provides a graphical depiction of the interaction point estimates computed observation-wise, plotted against the model-predicted outcome (see also Ai & Norton, 2003)"
+#' 'intsplot' provides a graphical depiction of the interaction point estimates computed observation-wise, plotted against the model-predicted outcome (see also Ai & Norton, 2003)
 #'
 #' pois.ints$intsplot
 #'

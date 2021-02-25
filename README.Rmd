@@ -58,7 +58,7 @@ We may then use this data to estimate the model as follows:
 ```
 pois<-glm(y ~ x1 + x2 + female + x1:female, data=df,family="poisson")
 ```
-Finally, we may laod in `modglm` using the following code:
+Finally, we can load in `modglm` using the following code:
 
 ```
 require(modglm)
