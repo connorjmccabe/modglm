@@ -337,6 +337,8 @@ modglm<-function(model, vars, data, part=NULL, hyps="means", plotby=NULL,type="c
     else if(type=="fd"| type=="dd"){jac<-cbind(deriv1, deriv2, deriv3, jcovar, deriv0)[,,drop=F]}
     colnames(jac) <- c(vars, int.var, colnames(jcovar), "(Intercept)")
     
+    jac <- jac[, match(colnames(X), colnames(jac)), drop=F]
+    
     # ints$jacs[i]<-jac
     # if(is.list(model$coefficients)){
     #   if(part=="count"){
