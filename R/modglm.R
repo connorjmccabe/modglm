@@ -1,11 +1,24 @@
 #' Computing Interactions in nonlinear probability and count models
 #'
-#' @param model The estmiated model object. Currently, this may ntake logit or Poisson model objects estimated using the 'stats' package or negative binomial mdoel objects ested using the 'MASS" package.
+#' @param model The estmiated model object.
+#' #Currently, this may ntake logit or Poisson model objects
+#' #estimated using the 'stats' package or negative binomial
+#' #model objects ested using the 'MASS" package.
 #' @param vars The interacting variable names.
 #' @param data The data frame on which the estimated model is based.
-#' @param hyps User-specified levels of the predictor variables for evaluating the interaction function. By default, this is specified at the mean values of all included covariates.
-#' @param plotby An option to view the interaction effect estimates plot across categories of another variable. Default is NULL.
-#' @param type The type of interaction being estimated. Options are ""cpd", "fd", and "dd". "cpd" indicates cross-partial derivative, and should be used when both varaibles are continuous. "fd" indicates finite difference, and should be used when one variable is continuous and the other is discrete. "dd" indicates double (finite) difference, and should be used if when both variables are categorical.
+#' @param hyps User-specified levels of the predictor variables
+#' #for evaluating the interaction function. By default,
+#' #this is specified at the mean values of all included covariates.
+#' @param plotby An option to view the interaction effect
+#' #estimates plot across categories of another variable. Default is NULL.
+#' @param type The type of interaction being estimated.
+#' #Options are ""cpd", "fd", and "dd". "cpd" indicates
+#' #cross-partial derivative, and should be used when both
+#' #variables are continuous. "fd" indicates finite
+#' #difference, and should be used when one variable
+#' #is continuous and the other is discrete.
+#' #"dd" indicates double (finite) difference, and should be
+#' #used if when both variables are categorical.
 #'
 #' @return
 #' @export
@@ -13,7 +26,7 @@
 #' @examples
 #' #Simulate a dataset
 #' set.seed(1678)
-#'
+#'require(ggplot2)
 #' b0 <- -3.8 ##Intercept
 #' b1 <- .35 ###Sensation Seeking Effect
 #' b2 <- .9 #Premeditation  Effect
@@ -24,7 +37,8 @@
 #' S<-matrix(c(1,.5,.5,1),nrow=2,ncol=2) #Specify covariance matrix
 #' sigma <- 1 #Level 1 error
 #'
-#' rawvars<-mvrnorm(n=n, mu=mu, Sigma=S) #simulates our continuous predictors from a multivariate normal distribution
+#' rawvars<-MASS::mvrnorm(n=n, mu=mu, Sigma=S) #simulates our
+#' #continuous predictors from a multivariate normal distribution
 #' cat<-rbinom(n=n,1,.5)
 #' id<-seq(1:n)
 #' eij <- rep(rnorm(id, 0, sigma))
@@ -37,33 +51,51 @@
 #'
 #' df <- data.frame(y=y,senseek=rawvars[,1],premed=rawvars[,2],male=cat)
 #'
-#Estimate a Poisson model regressing y on sensation seeking, premeditation, sex, and the interaction between sensation seeking and sex:
+#Estimate a Poisson model regressing y on sensation seeking,
+#'#premeditation, sex, and the interaction between sensation seeking and sex:
 #'
 #' pois<-glm(y ~ senseek + premed + male + senseek:male, data=df,family="poisson")
 #'
-#' #Evaluated the interaction function (i.e., computes finite difference values) for sensation seeking and sex
+#' #Evaluated the interaction function (i.e., computes
+#' #finite difference values) for sensation seeking and sex
 #' pois.ints<-modglm(model=pois, vars=c("senseek","male"), data=df, type="fd", hyps="means")
 #'
 #' names(pois.ints)
 #'
-#' 'obints' provides the interaction effect conditioned on each observation in the data. E.g:
+#'#`obints` provides the interaction effect conditioned on each observation in the data. E.g:
 #' head(pois.ints$obints)
 #'
-#' 'inthyp' provides the results of the hypothetical condition specified by 'hyps' above. In this case, this is represented at the mean of all predictors:
+#'#`inthyp` provides the results of the hypothetical condition
+#'# specified by 'hyps' above. In this case, this is
+#'#represented at the mean of all predictors:
 #' pois.ints$inthyp
 #'
-#' 'aie' refers to the average interaction effect. This is computed as the mean of all interaction effects in the observed data:
+#'#`aie` refers to the average interaction effect.
+#'#This is computed as the mean of all interaction
+#'#effects in the observed data:
 #' pois.ints$aie
 #'
-#' 'desc' provides several other helpful descriptors of the interaction effect that researchers may wish to report:
+#'#`desc` provides several other helpful descriptors
+#'#of the interaction effect that researchers may
+#'#wish to report:
 #' pois.ints$desc
 #'
-#' 'intsplot' provides a graphical depiction of the interaction point estimates computed observation-wise, plotted against the model-predicted outcome (see also Ai & Norton, 2003)
+#'#`intsplot` provides a graphical depiction of the interaction
+#'#point estimates computed observation-wise, plotted against
+#'#the model-predicted outcome (see also Ai & Norton, 2003)
 #'
 #' pois.ints$intsplot
 #'
 modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
 {
+  if(length(vars)>2){stop("You have selected more than two interaction predictors. Please select only two predictors.")}
+  if(length(vars)<2){stop("You have not selected enough predictors. Please select two predictors.")}
+
+  if(2 %in% lapply(df[,vars],function(x){length(unique(x))}) & type=="cpd"){warning("Note: one or more of your interaction variables may be dichotomous, but continuous variable interaction ('cpd') has been requested. Please check the variables and consider finite differences ('fd') or discrete finite differences ('dd') as the interaction 'type' if these variables are dichotomous.")}
+
+  if(FALSE %in% (lapply(df[,vars],function(x){length(unique(x))})>2) & type=="dd"){warning("Note: one or more of your interaction variables may be continuous, but discrete variable interaction ('dd') has been specified. Please check the variables and consider finite differences ('fd') or cross partial derivatives ('cpd') as the interaction 'type' if one or more of these variables is continuous.")}
+
+  if((length(unique(df[,vars[1]]))>2)!=(length(unique(df[,vars[2]]))>2) & type!="fd"){warning("Note: one of your variables appears continous and the other discrete. Finite differences ('fd') may be most appropriate for the interaction 'type' given these variables.")}
   ints<<-list()
   #This defines a string for the interaction term
   (int.var <- paste(vars, collapse = ":"))
@@ -453,23 +485,23 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
 
   ints$model.summary<-summary(model)
 
-  requireNamespace(ggplot2)
+  requireNamespace("ggplot2")
 
   plotdf<-ints$obints
 
   if(is.null(plotby)){
-    ints$intsplot<-ggplot(data=plotdf,aes(x=hat,y=int.est, color=sig)) +
-      geom_point(size=.75) +
-      labs(x="Predicted Value",y="Interaction Effect") +
-      theme_bw()
+    ints$intsplot<-ggplot2::ggplot(data=plotdf,ggplot2::aes(x=hat,y=int.est, color=sig)) +
+      ggplot2::geom_point(size=.75) +
+      ggplot2::labs(x="Predicted Value",y="Interaction Effect") +
+      ggplot2::theme_bw()
   }
   else{
 
     plotdf[,plotby]<-as.factor(data[,plotby])
 
-    ints$intsplot<-ggplot(data=plotdf,aes(x=hat,y=betas, color=sig, fill=sig,shape=plotdf[,plotby])) +
-      geom_point(size=1.5) +
-      labs(x="Predicted Value",y="Interaction Effect") +
+    ints$intsplot<-ggplot2::ggplot(data=plotdf,ggplot2::aes(x=hat,y=betas, color=sig, fill=sig,shape=plotdf[,plotby])) +
+      ggplot2::geom_point(size=1.5) +
+      ggplot2::labs(x="Predicted Value",y="Interaction Effect") +
       # scale_fill_manual(values=c("white","black")) +
       # scale_color_manual(values=c("red","blue")) +
       scale_shape_manual(values=c(1,3)) +
