@@ -7,17 +7,30 @@
 modglm(model, vars, data, hyps = "means", plotby = NULL, type = "cpd")
 }
 \arguments{
-\item{model}{The estmiated model object. Currently, this may ntake logit or Poisson model objects estimated using the 'stats' package or negative binomial mdoel objects ested using the 'MASS" package.}
+\item{model}{The estmiated model object.
+#Currently, this may ntake logit or Poisson model objects
+#estimated using the 'stats' package or negative binomial
+#model objects ested using the 'MASS" package.}
 
 \item{vars}{The interacting variable names.}
 
 \item{data}{The data frame on which the estimated model is based.}
 
-\item{hyps}{User-specified levels of the predictor variables for evaluating the interaction function. By default, this is specified at the mean values of all included covariates.}
+\item{hyps}{User-specified levels of the predictor variables
+#for evaluating the interaction function. By default,
+#this is specified at the mean values of all included covariates.}
 
-\item{plotby}{An option to view the interaction effect estimates plot across categories of another variable. Default is NULL.}
+\item{plotby}{An option to view the interaction effect
+#estimates plot across categories of another variable. Default is NULL.}
 
-\item{type}{The type of interaction being estimated. Options are ""cpd", "fd", and "dd". "cpd" indicates cross-partial derivative, and should be used when both varaibles are continuous. "fd" indicates finite difference, and should be used when one variable is continuous and the other is discrete. "dd" indicates double (finite) difference, and should be used if when both variables are categorical.}
+\item{type}{The type of interaction being estimated.
+#Options are ""cpd", "fd", and "dd". "cpd" indicates
+#cross-partial derivative, and should be used when both
+#variables are continuous. "fd" indicates finite
+#difference, and should be used when one variable
+#is continuous and the other is discrete.
+#"dd" indicates double (finite) difference, and should be
+#used if when both variables are categorical.}
 }
 \value{
 
@@ -28,7 +41,7 @@ Computing Interactions in nonlinear probability and count models
 \examples{
 #Simulate a dataset
 set.seed(1678)
-
+require(ggplot2)
 b0 <- -3.8 ##Intercept
 b1 <- .35 ###Sensation Seeking Effect
 b2 <- .9 #Premeditation  Effect
@@ -39,7 +52,8 @@ mu<-rep(0,2) #Specify means
 S<-matrix(c(1,.5,.5,1),nrow=2,ncol=2) #Specify covariance matrix
 sigma <- 1 #Level 1 error
 
-rawvars<-mvrnorm(n=n, mu=mu, Sigma=S) #simulates our continuous predictors from a multivariate normal distribution
+rawvars<-MASS::mvrnorm(n=n, mu=mu, Sigma=S) #simulates our
+#continuous predictors from a multivariate normal distribution
 cat<-rbinom(n=n,1,.5)
 id<-seq(1:n)
 eij <- rep(rnorm(id, 0, sigma))
@@ -50,27 +64,37 @@ y <- rpois(n,ct)
 
 df <- data.frame(y=y,senseek=rawvars[,1],premed=rawvars[,2],male=cat)
 
+#premeditation, sex, and the interaction between sensation seeking and sex:
 
 pois<-glm(y ~ senseek + premed + male + senseek:male, data=df,family="poisson")
 
-#Evaluated the interaction function (i.e., computes finite difference values) for sensation seeking and sex
+#Evaluated the interaction function (i.e., computes
+#finite difference values) for sensation seeking and sex
 pois.ints<-modglm(model=pois, vars=c("senseek","male"), data=df, type="fd", hyps="means")
 
 names(pois.ints)
 
-'obints' provides the interaction effect conditioned on each observation in the data. E.g:
+#`obints` provides the interaction effect conditioned on each observation in the data. E.g:
 head(pois.ints$obints)
 
-'inthyp' provides the results of the hypothetical condition specified by 'hyps' above. In this case, this is represented at the mean of all predictors:
+#`inthyp` provides the results of the hypothetical condition
+# specified by 'hyps' above. In this case, this is
+#represented at the mean of all predictors:
 pois.ints$inthyp
 
-'aie' refers to the average interaction effect. This is computed as the mean of all interaction effects in the observed data:
+#`aie` refers to the average interaction effect.
+#This is computed as the mean of all interaction
+#effects in the observed data:
 pois.ints$aie
 
-'desc' provides several other helpful descriptors of the interaction effect that researchers may wish to report:
+#`desc` provides several other helpful descriptors
+#of the interaction effect that researchers may
+#wish to report:
 pois.ints$desc
 
-'intsplot' provides a graphical depiction of the interaction point estimates computed observation-wise, plotted against the model-predicted outcome (see also Ai & Norton, 2003)
+#`intsplot` provides a graphical depiction of the interaction
+#point estimates computed observation-wise, plotted against
+#the model-predicted outcome (see also Ai & Norton, 2003)
 
 pois.ints$intsplot
 
