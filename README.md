@@ -1,5 +1,7 @@
 # Modglm: Evaluating interaction effects in logit and count GLMs
 
+This software produces the interaction effect between two variables in generalized linear models of probabilities and counts and provides additional statistics for evaluating and describing this effect. For continuous variables, this is quantified as the second-order cross-partial derivative. When one variable is continuous and the other is discrete, it is quantified as the discrete difference in the partial derivative. Finally, when both variables are discrete, it is defined as the discrete double difference.
+
 The following are instructions for using the functions provided by our `modglm` code. We strongly encourage that users first read our accompanying manuscript before using this code. This manuscript is published online in Multivariate Behavioral Research:
 
 McCabe, C. J., Halvorson, M. A., King, K. M., Cao, X., & Kim, D. S. (2020). Interpreting interaction effects in generalized linear models of nonlinear probabilities and counts. Multivariate Behavioral Research, 1-27. doi: https://doi.org/10.1080/00273171.2020.1868966
