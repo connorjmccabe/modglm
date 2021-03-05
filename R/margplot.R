@@ -66,7 +66,8 @@ margplot<-function(model, vars, data,hyps="means", foc, mod, modlevels,modnames=
 
   if(!all(data.table::between(modlevels,min(data[,mod]),max(data[,mod])))){warning("Note: at least one hypothetical moderator level in 'modlevels' is outside the range of your moderator variable. Please check your plotted moderator values.")}
 
-  (int.var <- paste(vars, collapse = ":"))
+  (int.varpossible <- c(paste(vars, collapse = ":"),paste(rev(vars), collapse = ":")))
+  (int.var<-int.varpossible[(int.varpossible %in% names(model$coefficients))])
 
   (b <- model$coef)
 

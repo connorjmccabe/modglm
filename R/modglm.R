@@ -99,7 +99,8 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
   if((length(unique(df[,vars[1]]))>2)!=(length(unique(df[,vars[2]]))>2) & type!="fd"){warning("Note: one of your variables appears continous and the other discrete. Finite differences ('fd') may be most appropriate for the interaction 'type' given these variables.")}
   ints<<-list()
   #This defines a string for the interaction term
-  (int.var <- paste(vars, collapse = ":"))
+  (int.varpossible <- c(paste(vars, collapse = ":"),paste(rev(vars), collapse = ":")))
+  (int.var<-int.varpossible[(int.varpossible %in% names(model$coefficients))])
   jacs<<-list()
 
   (b <- model$coef)
