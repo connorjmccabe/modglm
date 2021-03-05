@@ -135,9 +135,9 @@ margplot<-function(model, vars, data,hyps="means", foc, mod, modlevels,modnames=
 
   #Now, we can plot the results:
 
-  (margplot<-ggplot2::ggplot(data=dfplot.res,ggplot2::aes(x=x1,y=pe,group=as.factor(dfplot.res[,mod]),fill=as.factor(dfplot.res[,mod]))) +
+  (margplot<-ggplot2::ggplot(data=dfplot.res,ggplot2::aes(x=dfplot.res[,foc],y=pe,group=as.factor(dfplot.res[,mod]),fill=as.factor(dfplot.res[,mod]))) +
       ggplot2::geom_line(ggplot2::aes(color=as.factor(dfplot.res[,mod]))) +
-      ggplot2::geom_ribbon(ggplot2::aes(x=x1, ymin = lower, ymax = upper), alpha=.5) +
+      ggplot2::geom_ribbon(ggplot2::aes(x=dfplot.res[,foc], ymin = lower, ymax = upper), alpha=.5) +
       ggplot2::scale_fill_brewer(palette = "Pastel1")+ggplot2::scale_color_brewer(palette = "Set1")+
       # ylim(0,1) +
       ggplot2::ylab("DV") +
