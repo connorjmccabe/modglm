@@ -68,7 +68,6 @@ margplot<-function(model, vars, data,hyps="means", foc, mod, modlevels,modnames=
 
   (int.varpossible <- c(paste(vars, collapse = ":"),paste(rev(vars), collapse = ":")))
   (int.var<-int.varpossible[(int.varpossible %in% names(model$coefficients))])
-
   (b <- model$coef)
 
   if(model$call[1]=="gee()"){
