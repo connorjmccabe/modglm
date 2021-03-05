@@ -106,3 +106,30 @@ Finally, `modglm` will optionally produce an interaction point estimate at a spe
 `model.summary` is strictly a reproduction of a results summary table provided by the model (i.e. `summary(pois)`).
 
 Finally, `intsplot` provides a graphical depiction of the interaction point estimates computed observation-wise, plotted against the model-predicted outcome (see also Ai & Norton, 2003). This plot is created using `ggplot2`. This provides a snapshot summary of the interaction effects present in the data, including the significance values and the potential range in the observed interaction effects.
+
+### The `margplot` Function
+
+`margplot` provides a means of plotting the marginal effects corresponding with a given interaction effect. We have found that these plots can aid substantially in providing a lay interpretation of the effects of interest.
+
+The input structure of `margplot` was designed to be very similar to `modglm` and are as follows:
+
+```
+p<-margplot(model=pois, vars=c("x1","female"),foc="x1", mod="female", modlevels=c(0,1),data=df, hyps="means",sm=F,modnames=c("Male","Female"))
+```
+The `model`, `vars`, and `hyps` parameters are identical in meaining to `modglm` discussed above.
+
+`foc` refers to the focal (i.e., x-axis) variable to be displayed as the primary predictor on the generated plot.
+
+Conversely, `mod` refers to the moderating (i.e., legend) variable.
+
+`modlevels` refer to the levels at which to "probe" and display marginal effects that illustrate the interaction effect. These are conceptually identical to selecting levels at which to probe simple slopes in linear interaction models (for instance, at -2, -1, 1, or 2 SDs from the mean; see McCabe, Kim, & King, 2018).
+
+`sm` refers to "small mulitples". If TRUE, the plot output will show each marginal effect produced on its own small multiple plot. If FALSE, all effects will display on a single plot.
+
+`modnames` helps to redefine the names of the modlevels supplied to be more "sensible". For instance, here, "Male" and "Female" will appear on the plot instead of the dummy values "0" and "1" for readability.
+
+Note that the object produced is a `ggplot2` object that can be readily modified further. E.g., I can add more sensible axis labels to the produced plot like so:
+
+```
+p + ylab("Count") + xlab("X1")
+```
