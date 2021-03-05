@@ -25,8 +25,39 @@
 #' @examples
 #' #Building from the modglm example, this outputs a ggplot object plotting the effect of x1 on
 #' #the count of y across males and females:
+#' set.seed(1678)
+#' library(ggplot2)
+#' b0 <- -3.8 ##Intercept
+#' b1 <- .35 ###Sensation Seeking Effect
+#' b2 <- .9 #Premeditation  Effect
+#' b3 <- 1.1 #Sex covariate effect
+#' b13<- .2 #product term coefficient
+#' n<-1000 #Sample Size
+#' mu<-rep(0,2) #Specify means
+#' S<-matrix(c(1,.5,.5,1),nrow=2,ncol=2) #Specify covariance matrix
+#' sigma <- 1 #Level 1 error
 #'
-#' p<-margplot(model=pois, vars=c("x1","female"),foc="x1", mod="female", modlevels=c(0,1),data=df, hyps=c(1,0,-2,0,0),sm=F,modnames=c("Male","Female"))
+#' rawvars<-MASS::mvrnorm(n=n, mu=mu, Sigma=S) #simulates our
+#' #continuous predictors from a multivariate normal distribution
+#' cat<-rbinom(n=n,1,.5)
+#' id<-seq(1:n)
+#' eij <- rep(rnorm(id, 0, sigma))
+#' xb<-  (b0) + (b1) * (rawvars[,1]) + (b2) * (rawvars[,2]) + (b3)*cat + b13*cat*(rawvars[,1]) + eij
+# (b3) * (rawvars[,1]*rawvars[,2]) +
+#'
+#Generate Poisson data
+#' ct <- exp(xb)
+#' y <- rpois(n,ct)
+#'
+#' df <- data.frame(y=y,senseek=rawvars[,1],premed=rawvars[,2],male=cat)
+#'
+#Estimate a Poisson model regressing y on sensation seeking,
+#'#premeditation, sex, and the interaction between sensation seeking and sex:
+#'
+#' pois<-glm(y ~ senseek + premed + male + senseek:male, data=df,family="poisson")
+#'
+#' p<-margplot(model=pois, vars=c("senseek","male"),foc="senseek", mod="male",
+#'modlevels=c(0,1),data=df, hyps="means",sm=FALSE,modnames=c("Female","Male"))
 #'
 #'#Because this is a ggplot object, we can modify anything further by adding elements to this plot. E.g.:
 #'p + ylab("Count")
@@ -133,7 +164,12 @@ margplot<-function(model, vars, data,hyps="means", foc, mod, modlevels,modnames=
   dfplot.res<-as.data.frame(cbind(matxi[,foc],matxi[,mod],resm.model$pe,resm.model$lower,resm.model$upper),row.names=FALSE)
   colnames(dfplot.res)<-c(foc,mod,"pe","lower","upper")
 
-  if(!is.null(modnames)){for(i in 1:length(modlevels)){dfplot.res[,mod][dfplot.res[,mod]==modlevels[i]]<-modnames[i]}}
+  if(!is.null(modnames)){
+    for(i in 1:length(modlevels)){
+      dfplot.res[,mod][dfplot.res[,mod]==modlevels[i]]<-modnames[i]
+    }
+    dfplot.res[,mod]<-factor(dfplot.res[,mod],levels=modnames)
+    }
 
   #Now, we can plot the results:
 
