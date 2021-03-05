@@ -133,3 +133,4 @@ Note that the object produced is a `ggplot2` object that can be readily modified
 ```
 p + ylab("Count") + xlab("X1")
 ```
+![alt text](https://github.com/connorjmccabe/modglm/blob/master/margplotex.jpeg)
