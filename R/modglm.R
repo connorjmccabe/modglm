@@ -24,6 +24,7 @@
 #' @export
 #'
 #' @examples
+#'
 #' #Simulate a dataset
 #' set.seed(1678)
 #'require(ggplot2)
@@ -100,23 +101,9 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
   #This defines a string for the interaction term
   (int.var <- paste(vars, collapse = ":"))
   jacs<<-list()
-  #Define Coefficients
-  # if (is.list(model$coefficients)){
-  #
-  #   # if(is.null(part)){stop("Model part must be specified for two-part models. use part= in intglm function to specify.\n")}
-  #   # b<-model$coef$count
-  #   if(part=="count"){b<-model$coef$count}
-  #   if(part=="zero"){
-  #     if(grepl("zeroinfl",rb.ssdep$call[1])==T){b<- -(model$coef$zero)}
-  #     else{b<-model$coef$zero}
-  #     }
-  #
-  #   }
-  # else{
+
   (b <- model$coef)
-  # }
-  # b <- model$coef
-  #Define design matrix
+
   if(model$call[1]=="gee()"){
     dftemp<-na.omit(data[,which(names(data) %in% names(model$coefficients))])
     X<-as.data.frame(cbind(rep(1,nrow(dftemp)),dftemp))
@@ -141,59 +128,15 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
 
     X<-xmats[[i]]
 
-    # if (is.list(model$coefficients)){
-    #   if(part=="count"){
-    #     if (int.var %in% names(model$coefficients$count)){X[,int.var]<-X[,vars[1]]*X[,vars[2]]}
-    #   }
-    #   if(part=="zero"){
-    #     if (int.var %in% names(model$coefficients$zero)){X[,int.var]<-X[,vars[1]]*X[,vars[2]]}
-    #   }
-    # }
-    # else
     if (int.var %in% names(model$coefficients)){
       X[,int.var]<-X[,vars[1]]*X[,vars[2]]
-
-      # modvars<-colnames(vcov(model))
-
-      # if((!is.na(modvars[-(which(modvars==int.var))][which(grepl(":",modvars))]))){
-      #   (modvars.noint<-as.vector(na.omit(modvars[-(which(modvars==int.var))][which(grepl(":",modvars))])))
-      #
-      #   otherints<-strsplit(modvars.noint,":")
-      #
-      #   for(j in 1:length(otherints)){
-      #     X[,modvars.noint[j]]<-X[,otherints[[j]][1]]*X[,otherints[[j]][2]]
-      #   }
-      # }
 
     }
 
     X<-as.matrix(X)
 
-    # X<-model.matrix(model,model$model)
-    #matrix multiply n x p design matrix by p x 1 vector of coefficients
     (xb <- (X %*% b)[,,drop=F])
 
-    #Computes predicted quantities of interest
-
-    # if (is.list(model$coefficients)){
-    #   if (part=="zero"){
-    #     hat<-1/(1+ exp(-xb))
-    #     # phatmean<-1/(1+ exp(-xbmean))
-    #     #computes var(Yi)
-    #     deriv1 <- exp(-xb)*(1+exp(-xb))^(-2)
-    #     deriv2 <- ((exp(-xb)-1)*exp(-xb))/((exp(-xb)+1)^3)
-    #     deriv3 <- (exp(-xb)*(exp(2*-xb)-4*exp(-xb)+1))/((exp(-xb)+1)^4)
-    #   }
-    #   else if (part=="count"){
-    #     hat<-exp(xb)
-    #     deriv1 <- exp(xb)
-    #     deriv2 <- exp(xb)
-    #     deriv3 <- exp(xb)
-    #   }
-    #   # else{stop("Error: this two-part model is yet supported in inteff.")}
-    # }
-
-    # else
     if(type=="cpd"){
       if (model$family$link == "logit")
       {
@@ -203,13 +146,6 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
         deriv2 <- ((exp(-xb)-1)*exp(-xb))/((exp(-xb)+1)^3)
         deriv3 <- (exp(-xb)*(exp(2*-xb)-4*exp(-xb)+1))/((exp(-xb)+1)^4)
       }
-      # else if (model$family$link == "inverse")
-      # {
-      #   hat<-1/(xb)
-      #   deriv1 <- -(1/(xb^2))
-      #   deriv2 <- 2/(xb^3)
-      #   deriv3 <- -(6/(xb^4))
-      # }
 
       else if (model$family$link == "log")
       {
@@ -361,17 +297,6 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
       deriv0 <- (d1f11-d1f01)-(d1f10-d1f00)
     }
 
-    # if (is.list(model$coefficients)){
-    #   if(part=="count"){
-    #     if (int.var %in% names(model$coefficients$count)==F){bint<-0}
-    #   }
-    #   if(part=="zero"){
-    #     if (int.var %in% names(model$coefficients$zero)==F){bint<-0}
-    #   }
-    # }
-
-    # else
-
     if(type=="cpd"){
 
 
@@ -419,8 +344,6 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
     {colnames(covars) <- colnames(X)[-c(1, match(c(vars, int.var),
                                                  names(b)))]}
     else{colnames(covars) <- colnames(X)[-c(1, match(vars,names(b)))]}
-    #
-    # if(dd)(jcovar <- apply(covars, 2, function(x) (2 + 1) *d2f1 - 2 * d2f2 * x))
 
     if(type=="cpd"){jcovar <- apply(covars, 2, function(x) bint * deriv2 * x +b1b4x2 * b2b4x1 * x * deriv3)}
     else if(type=="fd"){jcovar <- apply(covars, 2, function(x) ((b[cont] + bint) *d2f1 - b[cont] * d2f2) * x)}
@@ -435,23 +358,9 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
 
     jac <- jac[, match(colnames(X), colnames(jac)), drop=F]
 
-    # ints$jacs[i]<-jac
-    # if(is.list(model$coefficients)){
-    #   if(part=="count"){
-    #    vcov<-vcov(model)[grepl("count_", colnames(vcov(model))),grepl("count_", colnames(vcov(model)))]}
-    #
-    #   if(part=="zero"){
-    #     vcov<-vcov(model)[grepl("zero_", colnames(vcov(model))),grepl("zero_", colnames(vcov(model)))]}
-    #
-    #   se <- sqrt(diag(jac %*% vcov %*% t(jac)))
-    # }
-
-
-    # else{
     if(model$call[1]=="gee()"){se <- sqrt(diag(jac %*% gee_Rap_full$robust.variance %*% t(jac)))}
 
     else{se <- sqrt(diag(jac %*% vcov(model) %*% t(jac)))}
-    # }
 
     t.val <- int.est/se
 
@@ -502,8 +411,6 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
     ints$intsplot<-ggplot2::ggplot(data=plotdf,ggplot2::aes(x=hat,y=betas, color=sig, fill=sig,shape=plotdf[,plotby])) +
       ggplot2::geom_point(size=1.5) +
       ggplot2::labs(x="Predicted Value",y="Interaction Effect") +
-      # scale_fill_manual(values=c("white","black")) +
-      # scale_color_manual(values=c("red","blue")) +
       scale_shape_manual(values=c(1,3)) +
       theme_bw()
 

@@ -17,4 +17,5 @@ Suggests:
     testthat
 Imports: 
     MASS,
-    ggplot2
+    ggplot2,
+    data.table
