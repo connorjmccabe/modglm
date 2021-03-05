@@ -109,20 +109,20 @@ Finally, `intsplot` provides a graphical depiction of the interaction point esti
 
 ### The `margplot` Function
 
-`margplot` provides a means of plotting the marginal effects corresponding with a given interaction effect. We have found that these plots can aid substantially in providing a lay interpretation of the effects of interest.
+`margplot` provides a means of plotting the marginal effects corresponding with a given interaction effect.
 
 The input structure of `margplot` was designed to be very similar to `modglm` and are as follows:
 
 ```
 p<-margplot(model=pois, vars=c("x1","female"),foc="x1", mod="female", modlevels=c(0,1),data=df, hyps="means",sm=F,modnames=c("Male","Female"))
 ```
-The `model`, `vars`, and `hyps` parameters are identical in meaining to `modglm` discussed above.
+The `model` and `vars` parameters are identical in meaning to `modglm` discussed above. `hyps` is also similar, but refers to the hypothetical values at which to hold the covariates constant that are otherwise included in the model. For instance, in the example above, the `x2` variable is held at its own mean when computing displayed marginal effects.
 
 `foc` refers to the focal (i.e., x-axis) variable to be displayed as the primary predictor on the generated plot.
 
 Conversely, `mod` refers to the moderating (i.e., legend) variable.
 
-`modlevels` refer to the levels at which to "probe" and display marginal effects that illustrate the interaction effect. These are conceptually identical to selecting levels at which to probe simple slopes in linear interaction models (for instance, at -2, -1, 1, or 2 SDs from the mean; see McCabe, Kim, & King, 2018).
+`modlevels` refer to the levels at which to "probe" and display marginal effects that illustrate the interaction effect. These are conceptually identical to selecting levels at which to probe simple slopes in linear interaction models (for instance, at -2, -1, 1, or 2 SDs from the mean; see McCabe, Kim, & King, 2018). In this example, given `female` is a dummy varible, we are selecting 0 and 1 to represent the effects for males and females, respectively.
 
 `sm` refers to "small mulitples". If TRUE, the plot output will show each marginal effect produced on its own small multiple plot. If FALSE, all effects will display on a single plot.
 
