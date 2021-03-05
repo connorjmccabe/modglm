@@ -109,7 +109,7 @@ Finally, `intsplot` provides a graphical depiction of the interaction point esti
 
 ### The `margplot` Function
 
-`margplot` provides a means of plotting the marginal effects corresponding with a given interaction effect.
+`margplot` provides a means of plotting the marginal effects corresponding with a given interaction effect. Estimates are generated straightforwardly via producing conditional expected values based on the estimated model. Confidence regions are generated using parametric bootstrapping (i.e., Monte Carlo simulation) following guidelines by King, Tomz, & Wittenberg (2000) and Kim & McCabe (under review).
 
 The input structure of `margplot` was designed to be very similar to `modglm` and are as follows:
 
