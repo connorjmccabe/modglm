@@ -18,24 +18,24 @@ margplot(
 }
 \arguments{
 \item{model}{The estmiated model object.
-#Currently, this may take logit or Poisson model objects
-#estimated using the 'stats' package or negative binomial
-#model objects tested using the 'MASS" package.}
+Currently, this may take logit or Poisson model objects
+estimated using the 'stats' package or negative binomial
+model objects tested using the 'MASS" package.}
 
 \item{vars}{The interacting variable names.}
 
 \item{data}{The data frame on which the estimated model is based.}
 
 \item{hyps}{User-specified levels of the predictor variables
-#for displaying marginal effects. By default,
-#this is specified at the mean values of all included covariates.}
+for displaying marginal effects. By default,
+this is specified at the mean values of all included covariates.}
 
 \item{foc}{Name of the variable that will be the focal (i.e., x-axis) variable}
 
 \item{mod}{Name of hte variable that will be the moderator (i.e., legend) variable}
 
 \item{modlevels}{A vector of hypothetical levels of the moderator
-#at which to display marginal effects.}
+at which to display marginal effects.}
 
 \item{modnames}{If the user wants to call the moderator levels something other
 Than what is provided in the data itself, the user can supply a vector of names here.}
@@ -49,4 +49,9 @@ on a single plot.}
 }
 \description{
 Plotting marginal effects for interactions in nonlinear probability and count models
+}
+\examples{
+#Building from the modglm example, this outputs a ggplot object plotting the effect of x1 on
+#the count of y across males and females:
+margplot(model=pois, vars=c("x1","female"),foc="x1", mod="female", modlevels=c(0,1),data=df, hyps=c(1,0,-2,0,0),sm=F,modnames=c("Male","Female"))
 }

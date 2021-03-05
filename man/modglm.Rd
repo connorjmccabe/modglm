@@ -39,6 +39,7 @@ modglm(model, vars, data, hyps = "means", plotby = NULL, type = "cpd")
 Computing Interactions in nonlinear probability and count models
 }
 \examples{
+
 #Simulate a dataset
 set.seed(1678)
 require(ggplot2)
