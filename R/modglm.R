@@ -512,3 +512,4 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
   invisible(ints)
 }
 
+
