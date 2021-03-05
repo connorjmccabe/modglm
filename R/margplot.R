@@ -26,8 +26,10 @@
 #' #Building from the modglm example, this outputs a ggplot object plotting the effect of x1 on
 #' #the count of y across males and females:
 #'
-#' margplot(model=pois, vars=c("x1","female"),foc="x1", mod="female", modlevels=c(0,1),data=df, hyps=c(1,0,-2,0,0),sm=F,modnames=c("Male","Female"))
+#' p<-margplot(model=pois, vars=c("x1","female"),foc="x1", mod="female", modlevels=c(0,1),data=df, hyps=c(1,0,-2,0,0),sm=F,modnames=c("Male","Female"))
 #'
+#'#Because this is a ggplot object, we can modify anything further by adding elements to this plot. E.g.:
+#'p + ylab("Count")
 margplot<-function(model, vars, data,hyps="means", foc, mod, modlevels,modnames=NULL,sm=T){
 
 
