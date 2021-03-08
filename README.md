@@ -88,7 +88,7 @@ The fourth is the type of interaction being specified (e.g., `type="fd"`). This 
 
 Finally, `modglm` will optionally produce an interaction point estimate at a specified hypothetical condition using the `hyp` input. By default, this is specified at the mean values of all included covariates. However, this can be modified by providing a vector of hypothetical values for the predictors involved in the model. For example, using `hyps=c(c(1,-.5,.25,0)` will provide estimates for when x1 is -0.5, x2 is 0.25, and female is 0. Note that a 1 must be provided at the beginning of this vector to carry forward the intercept value. 
 
-### `moglm` Output
+### `modglm` Output
 
 `modglm` produces a list of objects summarizing the results. Noting that we have defined our output as `pois.ints`, use (for example) `names(pois.ints)` to view the elements of this list, which provides the following:
 
