@@ -184,8 +184,8 @@ margplot<-function(model, vars, data,hyps="means", foc, mod, modlevels,modnames=
       ggplot2::theme(panel.grid=ggplot2::element_blank(),
             text = ggplot2::element_text(size=10),
             plot.title = ggplot2::element_text(hjust=0.5)) +
-      ggplot2::guides(fill=guide_legend(title=mod),
-             color=guide_legend(title=mod)))
+      ggplot2::guides(fill=ggplot2::guide_legend(title=mod),
+             color=ggplot2::guide_legend(title=mod)))
 
   if(sm){margplot<-margplot +ggplot2::facet_grid(~dfplot.res[,mod])}
 
