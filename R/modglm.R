@@ -100,7 +100,8 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
   ints<<-list()
   #This defines a string for the interaction term
   (int.varpossible <- c(paste(vars, collapse = ":"),paste(rev(vars), collapse = ":")))
-  (int.var<-int.varpossible[(int.varpossible %in% names(model$coefficients))])
+  if(any(int.varpossible %in% names(model$coefficients)))(int.var<-int.varpossible[(int.varpossible %in% names(model$coefficients))])
+  else(int.var<-"No product term specified")
   jacs<<-list()
 
   (b <- model$coef)
@@ -210,6 +211,16 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
         d1f2 <- exp(X2 %*% b)
         d2f2 <- exp(X2 %*% b)
       }
+      else if (model$family$link == "identity"){
+        hat<-X %*% b
+
+        hat1 <- X1 %*% b
+        d1f1 <- 1
+        d2f1 <- 0
+        hat2 <- X2 %*% b
+        d1f2 <- 1
+        d2f2 <- 0
+      }
 
       ie1 <- (b[cont] + bint) * d1f1
       ie2 <- b[cont] * d1f2
@@ -288,6 +299,21 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
 
         hat11 <- exp(x11b)
         d1f11 <- exp(x11b)
+      }
+      else if (model$family$link == "identity"){
+        hat<-X %*% b
+
+        hat00 <- x00b
+        d1f00 <- x00b
+
+        hat01 <- x01b
+        d1f01 <- x01b
+
+        hat10 <- x10b
+        d1f10 <- x10b
+
+        hat11 <- x11b
+        d1f11 <- x11b
       }
 
       int.est <- (hat11-hat10)-(hat01-hat00)
