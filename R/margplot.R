@@ -92,9 +92,9 @@ margplot<-function(model, vars, data,hyps="means", foc, mod, modlevels,modnames=
   #ranging from the minimum to maximum values of the focal predictor, in increments of .1.
   #I've also included 1 SD below the mean, the mean, and 1 SD above the mean as default values.
 
-  focal.seq <- sort(c(-1*sd(data[,foc],na.rm=TRUE),
+  focal.seq <- sort(c(mean(data[,foc],na.rm=TRUE)-1*sd(data[,foc],na.rm=TRUE),
                       mean(data[,foc],na.rm=TRUE),
-                      1*sd(data[,foc],na.rm=TRUE),
+                      mean(data[,foc],na.rm=TRUE)+1*sd(data[,foc],na.rm=TRUE),
                       seq(min(data[,foc], na.rm = TRUE),
                           max(data[,foc], na.rm = TRUE),
                           .1*sd(data[,foc],na.rm=TRUE))))
