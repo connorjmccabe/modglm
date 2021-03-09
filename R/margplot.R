@@ -181,9 +181,9 @@ margplot<-function(model, vars, data,hyps="means", foc, mod, modlevels,modnames=
       ggplot2::ylab("DV") +
       # facet_grid(~dfplot.res[,mod]) +
       ggplot2::theme_bw() +
-      ggplot2::theme(panel.grid=element_blank(),
-            text = element_text(size=10),
-            plot.title = element_text(hjust=0.5)) +
+      ggplot2::theme(panel.grid=ggplot2::element_blank(),
+            text = ggplot2::element_text(size=10),
+            plot.title = ggplot2::element_text(hjust=0.5)) +
       ggplot2::guides(fill=guide_legend(title=mod),
              color=guide_legend(title=mod)))
 
