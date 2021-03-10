@@ -67,7 +67,8 @@ margplot<-function(model, vars, data,hyps="means", foc, mod, modlevels,modnames=
   if(!all(data.table::between(modlevels,min(data[,mod]),max(data[,mod])))){warning("Note: at least one hypothetical moderator level in 'modlevels' is outside the range of your moderator variable. Please check your plotted moderator values.")}
 
   (int.varpossible <- c(paste(vars, collapse = ":"),paste(rev(vars), collapse = ":")))
-  (int.var<-int.varpossible[(int.varpossible %in% names(model$coefficients))])
+  if(any(int.varpossible %in% names(model$coefficients)))(int.var<-int.varpossible[(int.varpossible %in% names(model$coefficients))])
+  else(int.var<-"No product term specified")
   (b <- model$coef)
 
   if(model$call[1]=="gee()"){
@@ -113,7 +114,7 @@ margplot<-function(model, vars, data,hyps="means", foc, mod, modlevels,modnames=
     xim.modlvs[[i]]<-xim
     xim.modlvs[[i]][,foc]<-focal.seq
     xim.modlvs[[i]][,mod]<-modlevels[i]
-    xim.modlvs[[i]][,int.var]<-xim.modlvs[[i]][,foc]*xim.modlvs[[i]][,mod]
+    if(int.var!="No product term specified"){xim.modlvs[[i]][,int.var]<-xim.modlvs[[i]][,foc]*xim.modlvs[[i]][,mod]}
   }
   ximall<-data.table::rbindlist(xim.modlvs)
 
