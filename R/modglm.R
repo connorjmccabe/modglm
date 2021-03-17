@@ -92,11 +92,11 @@ modglm<-function(model, vars, data, hyps="means", plotby=NULL,type="cpd")
   if(length(vars)>2){stop("You have selected more than two interaction predictors. Please select only two predictors.")}
   if(length(vars)<2){stop("You have not selected enough predictors. Please select two predictors.")}
 
-  if(2 %in% lapply(df[,vars],function(x){length(unique(x))}) & type=="cpd"){warning("Note: one or more of your interaction variables may be dichotomous, but continuous variable interaction ('cpd') has been requested. Please check the variables and consider finite differences ('fd') or discrete finite differences ('dd') as the interaction 'type' if these variables are dichotomous.")}
+  if(2 %in% lapply(data[,vars],function(x){length(unique(x))}) & type=="cpd"){warning("Note: one or more of your interaction variables may be dichotomous, but continuous variable interaction ('cpd') has been requested. Please check the variables and consider finite differences ('fd') or discrete finite differences ('dd') as the interaction 'type' if these variables are dichotomous.")}
 
-  if(FALSE %in% (lapply(df[,vars],function(x){length(unique(x))})>2) & type=="dd"){warning("Note: one or more of your interaction variables may be continuous, but discrete variable interaction ('dd') has been specified. Please check the variables and consider finite differences ('fd') or cross partial derivatives ('cpd') as the interaction 'type' if one or more of these variables is continuous.")}
+  if(FALSE %in% (lapply(data[,vars],function(x){length(unique(x))})>2) & type=="dd"){warning("Note: one or more of your interaction variables may be continuous, but discrete variable interaction ('dd') has been specified. Please check the variables and consider finite differences ('fd') or cross partial derivatives ('cpd') as the interaction 'type' if one or more of these variables is continuous.")}
 
-  if((length(unique(df[,vars[1]]))>2)!=(length(unique(df[,vars[2]]))>2) & type!="fd"){warning("Note: one of your variables appears continous and the other discrete. Finite differences ('fd') may be most appropriate for the interaction 'type' given these variables.")}
+  if((length(unique(data[,vars[1]]))>2)!=(length(unique(data[,vars[2]]))>2) & type!="fd"){warning("Note: one of your variables appears continous and the other discrete. Finite differences ('fd') may be most appropriate for the interaction 'type' given these variables.")}
   ints<<-list()
   #This defines a string for the interaction term
   (int.varpossible <- c(paste(vars, collapse = ":"),paste(rev(vars), collapse = ":")))
